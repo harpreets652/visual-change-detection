@@ -8,14 +8,15 @@
 #include "Detector.h"
 #include <opencv2/xfeatures2d.hpp>
 
-class SURFDetector : public Detector {
-public:
-    SURFDetector() {};
+namespace ChangeDetector {
+    class SURFDetector : public Detector {
+    public:
+        SURFDetector() {};
 
-    ~SURFDetector() {};
+        ~SURFDetector() {};
 
-    std::vector<cv::KeyPoint> getFeatures(cv::Mat &pImage);
-};
-
+        std::vector<cv::KeyPoint> getFeatures(cv::Mat &pImage);
+    };
+}
 
 #endif //CHANGE_DETECTION_SURFDETECTOR_H

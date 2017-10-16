@@ -8,13 +8,15 @@
 #include <opencv2/opencv.hpp>
 #include <vector>
 
-class Descriptor {
-public:
-    Descriptor() {}
+namespace ChangeDetector {
+    class Descriptor {
+    public:
+        Descriptor() {}
 
-    virtual ~Descriptor() {}
+        virtual ~Descriptor() {}
 
-    virtual cv::Mat getDescriptors(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures)=0;
-};
+        virtual cv::Mat getDescriptors(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures)=0;
+    };
+}
 
 #endif //CHANGE_DETECTION_DESCRIPTOR_H

@@ -4,7 +4,7 @@
 
 #include "SURFDetector.h"
 
-std::vector<cv::KeyPoint> SURFDetector::getFeatures(cv::Mat &pImage) {
+std::vector<cv::KeyPoint> ChangeDetector::SURFDetector::getFeatures(cv::Mat &pImage) {
     cv::Ptr<cv::xfeatures2d::SURF> detector = cv::xfeatures2d::SURF::create(400);
 
     std::vector<cv::KeyPoint> keyPoints;

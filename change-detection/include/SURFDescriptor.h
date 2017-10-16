@@ -8,14 +8,16 @@
 #include "Descriptor.h"
 #include <opencv2/xfeatures2d.hpp>
 
-class SURFDescriptor : public Descriptor {
-public:
-    SURFDescriptor() {}
+namespace ChangeDetector {
+    class SURFDescriptor : public Descriptor {
+    public:
+        SURFDescriptor() {}
 
-    ~SURFDescriptor() {}
+        ~SURFDescriptor() {}
 
-    cv::Mat getDescriptors(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures);
-};
+        cv::Mat getDescriptors(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures);
+    };
+}
 
 
 #endif //CHANGE_DETECTION_SURFDESCRIPTOR_H

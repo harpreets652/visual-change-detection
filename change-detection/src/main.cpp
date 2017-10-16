@@ -4,6 +4,8 @@
 
 #include "SURFDetector.h"
 #include "SURFDescriptor.h"
+#include "FeatureMatch.h"
+#include "FlannMatcher.h"
 
 void showImage(std::string &imageName);
 
@@ -11,11 +13,28 @@ void showImage(cv::Mat &image);
 
 void featureDetectorSURF(std::string &imageName);
 
+void featureMatchUsingFlann(std::string &imageOne, std::string &imageTwo);
+
 int main() {
     std::string imageName = "../resources/chessboard.png";
-    featureDetectorSURF(imageName);
+    std::string imageOne = "../resources/scene.png";
+    std::string imageTwo = "../resources/crackerBox.png";
+
+//    featureDetectorSURF(imageName);
+    featureMatchUsingFlann(imageTwo, imageOne);
 
     return 0;
+}
+
+void featureMatchUsingFlann(std::string &imageOne, std::string &imageTwo) {
+    ChangeDetector::FeatureMatch *featureMatcher = new ChangeDetector::FlannMatcher();
+
+    ChangeDetector::Detector *surfDetector = new ChangeDetector::SURFDetector();
+    ChangeDetector::Descriptor *surfDescriptor = new ChangeDetector::SURFDescriptor();
+
+    featureMatcher->withDetector(surfDetector)
+            ->withDescriptor(surfDescriptor)
+            ->execute(imageOne, imageTwo);
 }
 
 void featureDetectorSURF(std::string &imageName) {
@@ -26,10 +45,10 @@ void featureDetectorSURF(std::string &imageName) {
         return;
     }
 
-    Detector *surfDetector = new SURFDetector();
+    ChangeDetector::Detector *surfDetector = new ChangeDetector::SURFDetector();
     std::vector<cv::KeyPoint> keyPoints = surfDetector->getFeatures(inputImage);;
 
-    Descriptor *surfDescriptor = new SURFDescriptor();
+    ChangeDetector::Descriptor *surfDescriptor = new ChangeDetector::SURFDescriptor();
     cv::Mat descriptors = surfDescriptor->getDescriptors(inputImage, keyPoints);
 
     cv::Mat keyPointsImage;
