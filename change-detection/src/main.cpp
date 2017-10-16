@@ -1,7 +1,9 @@
 #include <iostream>
 #include <vector>
 #include <opencv2/opencv.hpp>
-#include <opencv2/xfeatures2d.hpp>
+
+#include "SURFDetector.h"
+#include "SURFDescriptor.h"
 
 void showImage(std::string &imageName);
 
@@ -24,14 +26,14 @@ void featureDetectorSURF(std::string &imageName) {
         return;
     }
 
-    cv::Ptr<cv::xfeatures2d::SURF> detector = cv::xfeatures2d::SURF::create(400);
+    Detector *surfDetector = new SURFDetector();
+    std::vector<cv::KeyPoint> keyPoints = surfDetector->getFeatures(inputImage);;
 
-    std::vector<cv::KeyPoint> keypoints;
-    detector->detect(inputImage, keypoints);
+    Descriptor *surfDescriptor = new SURFDescriptor();
+    cv::Mat descriptors = surfDescriptor->getDescriptors(inputImage, keyPoints);
 
     cv::Mat keyPointsImage;
-
-    cv::drawKeypoints(inputImage, keypoints, keyPointsImage);
+    cv::drawKeypoints(inputImage, keyPoints, keyPointsImage);
 
     showImage(keyPointsImage);
 }
