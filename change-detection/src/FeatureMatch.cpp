@@ -25,13 +25,13 @@ void ChangeDetector::FeatureMatch::execute(std::string pImage1, std::string pIma
     imageTwoData.imageName = std::move(pImage2);
 
     imageOneData.imageData = cv::imread(imageOneData.imageName, cv::IMREAD_GRAYSCALE);
-    if (!imageOneData.imageData.data) {
+    if (imageOneData.imageData.empty()) {
         std::cerr << "Unable to open input image " << imageOneData.imageName << std::endl;
         return;
     }
 
     imageTwoData.imageData = cv::imread(imageTwoData.imageName, cv::IMREAD_GRAYSCALE);
-    if (!imageTwoData.imageData.data) {
+    if (imageTwoData.imageData.empty()) {
         std::cerr << "Unable to open input image " << imageTwoData.imageName << std::endl;
         return;
     }
