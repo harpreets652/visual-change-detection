@@ -48,9 +48,6 @@ void featureDetectorSURF(std::string &imageName) {
     ChangeDetector::Detector *surfDetector = new ChangeDetector::SURFDetector();
     std::vector<cv::KeyPoint> keyPoints = surfDetector->getFeatures(inputImage);;
 
-    ChangeDetector::Descriptor *surfDescriptor = new ChangeDetector::SURFDescriptor();
-    cv::Mat descriptors = surfDescriptor->getDescriptors(inputImage, keyPoints);
-
     cv::Mat keyPointsImage;
     cv::drawKeypoints(inputImage, keyPoints, keyPointsImage);
 
