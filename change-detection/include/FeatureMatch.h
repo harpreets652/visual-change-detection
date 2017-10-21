@@ -9,43 +9,42 @@
 #include <string>
 #include <vector>
 #include <opencv2/opencv.hpp>
-#include "Detector.h"
-#include "Descriptor.h"
 
 namespace ChangeDetector {
+    struct ImageDataContainer {
+        std::string imageName;
+        cv::Mat imageData;
+        std::vector<cv::KeyPoint> keyPoints;
+        cv::Mat keyPointDescriptors;
+    };
+
     class FeatureMatch {
     public:
         FeatureMatch();
 
         virtual ~FeatureMatch() {}
 
-        FeatureMatch *withDetector(Detector *pFeatureDetector);
-
-        FeatureMatch *withDescriptor(Descriptor *pFeatureDescriptor);
-
         void execute(std::string pImage1, std::string pImage2);
+
+        ImageDataContainer *getQueryImageData();
+
+        ImageDataContainer *getTrainingImageData();
 
     protected:
         //************override these methods*************************
-        virtual void preProcess() {};
+        virtual std::vector<cv::KeyPoint> featureDetection(cv::Mat &pImage)=0;
 
-        virtual void match(cv::Mat &pDescriptorOne, cv::Mat &pDescriptorTwo) {};
+        virtual cv::Mat featureDescription(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures)=0;
 
-        virtual void postProcess() {};
+        virtual void preProcess()=0;
+
+        virtual void match(cv::Mat &pDescriptorOne, cv::Mat &pDescriptorTwo)=0;
+
+        virtual void postProcess()=0;
         //************override these methods*************************
 
-        struct ImageDataContainer {
-            std::string imageName;
-            cv::Mat imageData;
-            std::vector<cv::KeyPoint> keyPoints;
-            cv::Mat keyPointDescriptors;
-        };
-
-        Detector *featureDetector;
-        Descriptor *featureDescriptor;
-
-        ImageDataContainer imageOneData;
-        ImageDataContainer imageTwoData;
+        ImageDataContainer queryImage;
+        ImageDataContainer trainingImage;
     };
 }
 

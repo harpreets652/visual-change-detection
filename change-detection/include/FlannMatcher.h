@@ -7,6 +7,8 @@
 
 #include <iostream>
 #include <math.h>
+#include <functional>
+#include <utility>
 #include <opencv2/xfeatures2d.hpp>
 #include "FeatureMatch.h"
 
@@ -17,7 +19,15 @@ namespace ChangeDetector {
 
         ~FlannMatcher() {}
 
+        std::vector<cv::DMatch> getMatchedFeatures(std::function<bool(cv::DMatch &, std::pair<double, double>)> &pCriteria);
+
+        std::pair<double, double> getMinAndMaxFeatureMatchDistances();
+
     protected:
+        std::vector<cv::KeyPoint> featureDetection(cv::Mat &pImage);
+
+        cv::Mat featureDescription(cv::Mat &pImage, std::vector<cv::KeyPoint> pFeatures);
+
         void preProcess();
 
         void match(cv::Mat &pDescriptorOne, cv::Mat &pDescriptorTwo);
@@ -26,6 +36,8 @@ namespace ChangeDetector {
 
     private:
         std::vector<cv::DMatch> matchedFeatures;
+        double minDistanceOfMatches;
+        double maxDistanceOfMatches;
     };
 }
 

@@ -5,58 +5,59 @@
 #include "FeatureMatch.h"
 
 ChangeDetector::FeatureMatch::FeatureMatch() {
-    featureDetector = nullptr;
-    featureDescriptor = nullptr;
 }
-
-ChangeDetector::FeatureMatch *ChangeDetector::FeatureMatch::withDetector(Detector *pFeatureDetector) {
-    featureDetector = pFeatureDetector;
-    return this;
-}
-
-ChangeDetector::FeatureMatch *ChangeDetector::FeatureMatch::withDescriptor(Descriptor *pFeatureDescriptor) {
-    featureDescriptor = pFeatureDescriptor;
-    return this;
-}
-
 
 void ChangeDetector::FeatureMatch::execute(std::string pImage1, std::string pImage2) {
-    imageOneData.imageName = std::move(pImage1);
-    imageTwoData.imageName = std::move(pImage2);
+    queryImage.imageName = std::move(pImage1);
+    trainingImage.imageName = std::move(pImage2);
 
-    imageOneData.imageData = cv::imread(imageOneData.imageName, cv::IMREAD_GRAYSCALE);
-    if (imageOneData.imageData.empty()) {
-        std::cerr << "Unable to open input image " << imageOneData.imageName << std::endl;
+    queryImage.imageData = cv::imread(queryImage.imageName, cv::IMREAD_GRAYSCALE);
+    if (queryImage.imageData.empty()) {
+        std::cerr << "Unable to open input image " << queryImage.imageName << std::endl;
         return;
     }
 
-    imageTwoData.imageData = cv::imread(imageTwoData.imageName, cv::IMREAD_GRAYSCALE);
-    if (imageTwoData.imageData.empty()) {
-        std::cerr << "Unable to open input image " << imageTwoData.imageName << std::endl;
+    trainingImage.imageData = cv::imread(trainingImage.imageName, cv::IMREAD_GRAYSCALE);
+    if (trainingImage.imageData.empty()) {
+        std::cerr << "Unable to open input image " << trainingImage.imageName << std::endl;
         return;
     }
 
     std::cout << "Running feature detector" << std::endl;
-    if (featureDetector == nullptr || featureDescriptor == nullptr) {
-        std::cerr << "Feature detector and descriptor must be specified" << std::endl;
+    queryImage.keyPoints = featureDetection(queryImage.imageData);
+    trainingImage.keyPoints = featureDetection(trainingImage.imageData);
+
+    if (queryImage.keyPoints.empty() || trainingImage.keyPoints.empty()) {
+        std::cerr << "Feature detector did not find features." << std::endl;
         return;
     }
 
-    imageOneData.keyPoints = featureDetector->getFeatures(imageOneData.imageData);
-    imageTwoData.keyPoints = featureDetector->getFeatures(imageTwoData.imageData);
-
     std::cout << "Running feature descriptor" << std::endl;
-    imageOneData.keyPointDescriptors = featureDescriptor->getDescriptors(imageOneData.imageData,
-                                                                         imageOneData.keyPoints);
-    imageTwoData.keyPointDescriptors = featureDescriptor->getDescriptors(imageTwoData.imageData,
-                                                                         imageTwoData.keyPoints);
+    queryImage.keyPointDescriptors = featureDescription(queryImage.imageData,
+                                                          queryImage.keyPoints);
+
+    trainingImage.keyPointDescriptors = featureDescription(trainingImage.imageData,
+                                                          trainingImage.keyPoints);
+
+    if (queryImage.keyPointDescriptors.empty() || trainingImage.keyPointDescriptors.empty()) {
+        std::cerr << "Feature description returned empty results." << std::endl;
+        return;
+    }
 
     std::cout << "pre-process step" << std::endl;
     preProcess();
 
     std::cout << "Match features" << std::endl;
-    match(imageOneData.keyPointDescriptors, imageTwoData.keyPointDescriptors);
+    match(queryImage.keyPointDescriptors, trainingImage.keyPointDescriptors);
 
     std::cout << "post-process step" << std::endl;
     postProcess();
+}
+
+ChangeDetector::ImageDataContainer *ChangeDetector::FeatureMatch::getQueryImageData() {
+    return &queryImage;
+}
+
+ChangeDetector::ImageDataContainer *ChangeDetector::FeatureMatch::getTrainingImageData() {
+    return &trainingImage;
 }
