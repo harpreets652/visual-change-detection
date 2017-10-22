@@ -64,6 +64,7 @@ void ChangeDetector::FlannMatcher::postProcess() {
     std::cout << "Maximum distance in matched features: " << maxDistance << std::endl;
     std::cout << "Minimum distance in matched features: " << minDistance << std::endl;
 
+/* Note~ this isn't necessary
     cv::Mat imageOfMatches;
     cv::drawMatches(queryImage.imageData, queryImage.keyPoints,
                     trainingImage.imageData, trainingImage.keyPoints,
@@ -74,13 +75,14 @@ void ChangeDetector::FlannMatcher::postProcess() {
 
     cv::namedWindow("Image with matches", cv::WINDOW_KEEPRATIO);
     cv::imshow("Image with matches", imageOfMatches);
+*/
 
     std::cout << "Good matches found:" << std::endl;
-    for (auto feature : goodMatches) {
+    for (const auto &feature : goodMatches) {
         std::cout << "KeyPoint 1: " << feature.queryIdx << ", KeyPoint 2: " << feature.trainIdx << std::endl;
     }
 
-    cv::waitKey(0);
+//    cv::waitKey(0);
 }
 
 std::vector<cv::DMatch> ChangeDetector::FlannMatcher::getMatchedFeatures(
