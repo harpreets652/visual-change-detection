@@ -1,0 +1,2 @@
+odometry.seq,odometry.stamp,pose.position.x,pose.position.y,pose.position.z,pose.orientation.x,pose.orientation.y,pose.orientation.z,pose.orientation.w
+3543,1508459484.097943068,0.744829,-0.066984,1.33443,-0.00562835,-0.0010897,-0.064375,0.997909

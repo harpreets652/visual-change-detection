@@ -1,0 +1,45 @@
+PROJECT(change_detection)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.8)
+
+# Ensure C++11
+SET(CMAKE_CXX_STANDARD 11)
+SET(CMAKE_CXX_STANDARD_REQUIRED on)
+
+# Place targets into their own solution folders
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+SET(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/CMakeModules")
+FIND_PACKAGE(OpenCV REQUIRED)
+SET(TARGET_LIBRARIES "${OpenCV_LIBS}")
+
+IF (UNIX)
+    ADD_DEFINITIONS(-DUNIX)
+ENDIF (UNIX)
+
+# Set Includes
+INCLUDE_DIRECTORIES(
+        "${PROJECT_SOURCE_DIR}/include"
+        ${OpenCV_INCLUDE_DIRS}
+)
+
+# Set sources
+FILE(GLOB_RECURSE HEADERS "include/*.h")
+FILE(GLOB_RECURSE SOURCES "src/*.cpp")
+
+ADD_EXECUTABLE(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+
+add_custom_target("${PROJECT_NAME}_SUCCESSFUL" ALL
+        DEPENDS ${PROJECT_NAME}
+        COMMAND ${CMAKE_COMMAND} -E echo ""
+        COMMAND ${CMAKE_COMMAND} -E echo "====================="
+        COMMAND ${CMAKE_COMMAND} -E echo "  Compile complete!"
+        COMMAND ${CMAKE_COMMAND} -E echo "====================="
+        COMMAND ${CMAKE_COMMAND} -E echo "${CMAKE_CURRENT_BINARY_DIR}"
+        )
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME} ${OpenCV_LIBS})
+
+
+
+
+
